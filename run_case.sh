@@ -12,7 +12,7 @@ curl -vs -X POST 'http://localhost:8080/api/registerReservation' \
 	-H 'Content-Type: application/json' \
 	-d '
 {
-  "seatsArrayWithChosenSeats": [
+  "chosenSeatsArray": [
     ["o", "o", "o", "o", "o"],
     ["o", "o", "o", "o", "o"],
     ["o", "o", "x", "x", "x"],

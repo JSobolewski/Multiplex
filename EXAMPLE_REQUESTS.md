@@ -14,7 +14,7 @@ POST http://localhost:8080/api/registerReservation
 Content-Type: application/json
 
 {
-  "seatsArrayWithChosenSeats": [
+  "chosenSeatsArray": [
     ["o", "o", "o", "o", "o"],
     ["o", "o", "o", "o", "o"],
     ["o", "o", "x", "x", "x"],

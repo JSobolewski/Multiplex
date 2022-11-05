@@ -114,7 +114,7 @@ public class ReservationService {
 
     public String registerNewReservation(FreshReservation freshReservation) throws Exception {
 
-        char[][] seatsArrayWithChosenSeats = freshReservation.getSeatsArrayWithChosenSeats();
+        char[][] chosenSeatsArray = freshReservation.getChosenSeatsArray();
         MultiplexUser multiplexUser = freshReservation.getMultiplexUser();
 
         if(!isNameCorrect(multiplexUser.getName(), multiplexUser.getSurname())) {
@@ -141,18 +141,18 @@ public class ReservationService {
                 // Function checkSeatsCorrectness(char[][], char[][]) checks if the seats schema after booking reservation is correct, according to the assumptions - there cannot be a single place left over in a row between 2 already reserved places.
                 // It also calculates count of chosen seats (chosenSeatsCount variable).
                 // It's also responsible for checking if chosen seats are already busy, if given seats schema is incorrect, if user didn't choose any seats or if all of the seats in chosen screening's room are already busy.
-                if(!checkSeatsCorrectness(seatsArrayWithChosenSeats, seatsArrayBeforeChoice)) {
+                if(!checkSeatsCorrectness(chosenSeatsArray, seatsArrayBeforeChoice)) {
                     throw new Exception("Cannot add new reservation! There cannot be a single place left over in a row between two already reserved places! " +
                             "Choose another seats and try to book reservation again!"
                     );
                 } else {
 
-                    seatsArrayWithChosenSeats = potentialSeatsArrayAfterReservation;
+                    chosenSeatsArray = potentialSeatsArrayAfterReservation;
 
                     if (multiplexUserRepository.findMultiplexUserByNameAndSurname(multiplexUser.getName(), multiplexUser.getSurname()) != null)
-                        addNewReservation(seatsArrayWithChosenSeats, multiplexUserRepository.findMultiplexUserByNameAndSurname(multiplexUser.getName(), multiplexUser.getSurname()), chosenScreeningId);
+                        addNewReservation(chosenSeatsArray, multiplexUserRepository.findMultiplexUserByNameAndSurname(multiplexUser.getName(), multiplexUser.getSurname()), chosenScreeningId);
                     else
-                        addNewReservation(seatsArrayWithChosenSeats, multiplexUser, chosenScreeningId);
+                        addNewReservation(chosenSeatsArray, multiplexUser, chosenScreeningId);
 
                     StringBuilder result = new StringBuilder("Total amount to pay: ");
 
@@ -211,7 +211,7 @@ public class ReservationService {
         return result;
     }
 
-    public boolean checkSeatsCorrectness(char[][] seatsArrayWithChosenSeats, char[][] seatsArrayBeforeChoice) throws Exception {
+    public boolean checkSeatsCorrectness(char[][] chosenSeatsArray, char[][] seatsArrayBeforeChoice) throws Exception {
         potentialSeatsArrayAfterReservation = new char[5][5];
         int alreadyBusySeats = 0;
 
@@ -223,13 +223,13 @@ public class ReservationService {
                     alreadyBusySeats++;
                     potentialSeatsArrayAfterReservation[i][j] = 'x';
                 }
-                if(seatsArrayBeforeChoice[i][j] == 'o' && seatsArrayWithChosenSeats[i][j] == 'x') {
+                if(seatsArrayBeforeChoice[i][j] == 'o' && chosenSeatsArray[i][j] == 'x') {
                     potentialSeatsArrayAfterReservation[i][j] = 'x';
                     chosenSeatsCount++;
-                } else if(seatsArrayBeforeChoice[i][j] == 'x' && seatsArrayWithChosenSeats[i][j] == 'x')
+                } else if(seatsArrayBeforeChoice[i][j] == 'x' && chosenSeatsArray[i][j] == 'x')
                     throw new Exception("One or more of chosen seats are already busy! Change seats and try to book reservation again!");
 
-                if(seatsArrayBeforeChoice[i][j] == 'o' && seatsArrayWithChosenSeats[i][j] == 'o') {
+                if(seatsArrayBeforeChoice[i][j] == 'o' && chosenSeatsArray[i][j] == 'o') {
                     potentialSeatsArrayAfterReservation[i][j] = 'o';
                 }
             }
@@ -365,16 +365,16 @@ public class ReservationService {
         return foundScreenings;
     }
 
-    public void addNewReservation(char[][] seatsArrayWithChosenSeats, MultiplexUser multiplexUser, Integer chosenScreeningId) {
+    public void addNewReservation(char[][] chosenSeatsArray, MultiplexUser multiplexUser, Integer chosenScreeningId) {
         Screening chosenScreening = screeningRepository.findScreeningById(chosenScreeningId);
 
         Room reservationRoom = chosenScreening.getRoom();
 
-        reservationRoom.setSeatsRow1(seatsArrayWithChosenSeats[0]);
-        reservationRoom.setSeatsRow2(seatsArrayWithChosenSeats[1]);
-        reservationRoom.setSeatsRow3(seatsArrayWithChosenSeats[2]);
-        reservationRoom.setSeatsRow4(seatsArrayWithChosenSeats[3]);
-        reservationRoom.setSeatsRow5(seatsArrayWithChosenSeats[4]);
+        reservationRoom.setSeatsRow1(chosenSeatsArray[0]);
+        reservationRoom.setSeatsRow2(chosenSeatsArray[1]);
+        reservationRoom.setSeatsRow3(chosenSeatsArray[2]);
+        reservationRoom.setSeatsRow4(chosenSeatsArray[3]);
+        reservationRoom.setSeatsRow5(chosenSeatsArray[4]);
 
         Reservation newReservation = new Reservation(reservationRoom, multiplexUser, chosenScreening);
         reservationRepository.save(newReservation);

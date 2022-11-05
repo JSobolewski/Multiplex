@@ -4,16 +4,16 @@ import pl.jakubsobolewski.Multiplex.multiplexUser.MultiplexUser;
 
 public class FreshReservation {
 
-    private final char[][] seatsArrayWithChosenSeats;
+    private final char[][] chosenSeatsArray;
     private final MultiplexUser multiplexUser;
 
-    public FreshReservation(char[][] seatsArrayWithChosenSeats, MultiplexUser multiplexUser) {
-        this.seatsArrayWithChosenSeats = seatsArrayWithChosenSeats;
+    public FreshReservation(char[][] chosenSeatsArray, MultiplexUser multiplexUser) {
+        this.chosenSeatsArray = chosenSeatsArray;
         this.multiplexUser = multiplexUser;
     }
 
-    public char[][] getSeatsArrayWithChosenSeats() {
-        return seatsArrayWithChosenSeats;
+    public char[][] getChosenSeatsArray() {
+        return chosenSeatsArray;
     }
 
     public MultiplexUser getMultiplexUser() {
