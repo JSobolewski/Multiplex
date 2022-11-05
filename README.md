@@ -11,8 +11,18 @@ The application is a simple ticket booking app for a multiplex.
 1. You need to have Java JDK installed (preferred version: 17).
 2. If you're working on Windows, you need to have Git installed (.sh scripts with Git Bash). You can also run them with WSL.
 If you are working on Linux - you just have to run the scripts (type command '_./script_name.sh_' in main folder of the project).
-3. You also need to have PostgreSQL database installed in a system (preferred version: 15).
-4. For run_case.sh script you need to have cURL installed in a system.
+3. You also need to have PostgreSQL database installed in a system (preferred version: 15). The project will try to connect to database 'multiplex' using postgres default superuser (called 'postgres') with password 'postgres', on default PostgreSQL port (5432). You can change database name, username and password and port in src/main/resources/application.properties file:
+![Properties file](app_properties_file.png)
+
+Before building and running the project, you should also have a proper database created in PostgreSQL. You can do this via PostgreSQL cli ('***psql -U postgres***' command in cmd):
+
+``` CREATE DATABASE multiplex; ```
+
+The user should also have privileges granted to the proper database:
+
+``` GRANT ALL PRIVILEGES ON DATABASE "multiplex" TO postgres; ```
+
+4. For run_case.sh script you need to have cURL installed in a system (on Windows it should be normally installed with Git for Windows).
 <br><br>
    
 **HOW TO BUILD AND RUN APPLICATION**
@@ -39,3 +49,4 @@ And open 'run_case.sh' script to run example case and display HTTP requests & re
 2. For one reservation (ticket) there can be multiple places, but we assume they're all one type (for Student/Adult/Child).
 3. We assume reservation expires 5 minutes before screening starts. If the user won't appear at latest 5 minutes before screening starts - the ticket is lost.
 4. We assume that every room is 5 rows x 5 seats.
+5. When sending POST request to register new reservation, sent array "chosenSeatsArray" should only have seats we choose to book, other seats should be marked as free ('o'). Otherwise, the project will throw an exception.
